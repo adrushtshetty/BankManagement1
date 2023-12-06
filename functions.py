@@ -163,42 +163,23 @@ import pandas as pd
 import mysql.connector as sqltor
 from  processing import *
 
-mycon=sqltor.connect(host="localhost",user="root",passwd="admin",database="bank_management")
-df=pd.read_sql("select * from accountDetails ;",mycon)
+# mycon=sqltor.connect(host="localhost",user="root",passwd="admin",database="bank_management")
+# df=pd.read_sql("select * from accountDetails ;",mycon)
 f=567789012
 t=567890123
 f=567789012
 t=567890123
 # t=567789012
-print(AccountValidity(f,df))
-print(AccountValidity(t,df))
-print("-"*100)
+# print(AccountValidity(f,df))
+# print(AccountValidity(t,df))
+# print("-"*100)
 # for x in df["account_number"].values:
 #     print(type(int(x)))
 # if f in df["account_number"].values
-print(int(f) in (list(map(int,list(df["account_number"].values)))))
-print((list(map(int,list(df["account_number"].values)))))
-print(t in (list(map(int,list(df["account_number"].values)))))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# print(int(f) in (list(map(int,list(df["account_number"].values)))))
+# print((list(map(int,list(df["account_number"].values)))))
+# print(t in (list(map(int,list(df["account_number"].values)))))
 
 
 # acc=numbers_list = [123234567, 123345678, 123456789, 234345678, 234456789, 234567890, 345456789, 345567890, 345678901, 456567890, 456678901, 456789012, 567678901, 567789012, 567890123, 678789012, 678890123, 678901234, 789012345, 789901234, 890012345, 890123456, 901123456, 901234567, 987654321]

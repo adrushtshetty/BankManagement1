@@ -22,7 +22,6 @@ def login():
             return redirect(url_for('home'))
     return render_template('login.html', error=error)
 
-
 @app.route("/home")
 def home():
     return render_template("index.html")
@@ -81,11 +80,7 @@ def chkVerify():
 
             return render_template("chequeBookClearanceAccountNotFoundFailed.html", accNotFound='{}'.format(AccNotFound))
 
-        # elif (AccountValidity(f,df)):
-        #     file1 = open("debug.txt", "w")
-        #     file1.write("Failed from account")
-        #     file.close()
-        #     return redirect(url_for('chequeBookClearanceAccountNotFoundFailed'))
+
 
         elif (AccountValidity(f,df)) and (AccountValidity(t,df)):
             file1 = open("debug.txt", "w")
@@ -95,18 +90,17 @@ def chkVerify():
             for x in range(len(df["account_number"])):
                 if int(df['account_number'][x]) == int(f):
                     ind = x
-                    print("IND FOUND")
+
             # ind=findIndex(df, "account_number", df)
 
             keys=keysExtractions(df["keys_array"][ind])
-            print(type(keys))
+
             path="static/signatures/"
             if (k in keys) and (i==df["ifsc_code"][ind]):
                 chk=1
                 file1 = open("debug.txt", "w")
                 file1.write("Signature")
                 file.close()
-                print("SIGNATURE FOUND")
 
                 path+=df['signature'][ind]
 
@@ -117,15 +111,13 @@ def chkVerify():
                 # path+=df1["signature"][0]
 
 
-                print(path)
-
                 return render_template("chequeBookVerify.html", FaccNo='{}'.format(f), TaccNo='{}'.format(t),
                                        Name='{}'.format(name), chkKey='{}'.format(k), Amount='{}'.format(a),
                                        img_path='{}'.format(path),IFSC='{}'.format(i))
 
 
             elif not(k in keys):
-                print("here")
+
                 return redirect(url_for('chequeBookClearanceKEYFailed'))
 
             elif not(i==df["ifsc_code"][ind]):
@@ -170,6 +162,7 @@ def chkTransaction():
                             fL.append(-float(a))
                             tL.append(float(a))
 
+
                             mycon=sqltor.connect(host="localhost",user="root",passwd="admin",database="bank_management")
                             cursor=mycon.cursor()
                             query = "UPDATE passbook SET passbk = %s WHERE account_number = %s"
@@ -181,6 +174,14 @@ def chkTransaction():
                             query1 = "UPDATE accountDetails SET balance = %s WHERE account_number = %s"
                             cursor.execute(query1, (df["balance"][fInd], f))
                             cursor.execute(query1, (df["balance"][tInd], t))
+
+                            l = keysExtractions(df['keys_array'][findIndex(df, "account_number", f)])
+                            l.remove(k)
+                            print(l)
+                            df['keys_array'][findIndex(df, "account_number", f)] = str(l)
+                            query2 = "UPDATE accountDetails SET keys_array = %s WHERE account_number = %s"
+                            cursor.execute(query2, (str(l), f))
+
 
                             mycon.commit()
                             cursor.close()
@@ -196,7 +197,7 @@ def chkTransaction():
                             f1.write(reason(df['account_status'][findIndex(df,"account_number",f)])+'\n'+reason(df['account_status'][findIndex(df,"account_number",f)]))
                             f1.close()
                             if len(df['account_status'][findIndex(df, "account_number", f)])>14 and len(df['account_status'][findIndex(df, "account_number", t)])>14:
-                                print("1")
+
                                 mainblk="Both Accounts"
                                 blockedAccount1=f
                                 rsn1=reason(df['account_status'][findIndex(df, "account_number", f)])
@@ -205,14 +206,14 @@ def chkTransaction():
 
 
                             elif len(df['account_status'][findIndex(df, "account_number", t)])>14:
-                                print("2")
+
                                 blockedAccount1,mainblk=f,str(f)+" Account "
                                 rsn1=reason(df['account_status'][findIndex(df, "account_number", f)])
                                 blockedAccount2=""
                                 rsn2=""
                             elif len(df['account_status'][findIndex(df, "account_number", f)])>14:
 
-                                print("3")
+
 
                                 blockedAccount1,mainblk=f,str(f)+" Account "
                                 rsn1=reason(df['account_status'][findIndex(df, "account_number", f)])
