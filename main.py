@@ -238,6 +238,52 @@ def chkTransaction():
             return render_template("chequeBookClearanceEMPcredFailed.html")
 
 
+@app.route('/fundtransfer/<ft_val>')
+def fundt(ft_val):
+
+    return render_template('fundtransfer.html', ft_val = ft_val)
+
+
+@app.route('/fundtransfer_func', methods=["POST"] )
+def fundt_fun():
+
+    df1 = df.copy()
+    df2 = emp.copy()
+    df3 = passBook
+
+    li1 = {x: y for x, y in zip(df1["account_number"], df1["balance"])}  # This is a Dictionary
+    li2 = [list(df2.iloc[i]) for i in range(len(df2))]
+    li_req = [int(request.form["Acc_from"]), int(request.form["Acc_to"]), request.form["Emp_id"], request.form["Emp_pin"]]
+    print(li_req)
+    accFrom_valid = li_req[0] in li1.keys()
+    accTo_valid = li_req[1] in li1.keys()
+    emp_valid = [li_req[2], li_req[3]] in li2
+
+    if accFrom_valid and accTo_valid and emp_valid:
+        Amount = float(request.form["Amt"])
+        if Amount > li1[li_req[0]]:
+            return redirect(url_for('fundt', ft_val="fundtransfer_insuffFund"))
+        else:
+            li1[li_req[0]] = li1[li_req[0]]-Amount
+            mycon = sqltor.connect(host="localhost", user="root", passwd="admin", database="bank_management")
+            cursor = mycon.cursor()
+            li1[li_req[1]] = li1[li_req[1]]+Amount
+            cursor.execute("update accountdetails set balance=%s where account_number=%s ;", [li1[li_req[0]], li_req[0]])
+            cursor.execute("update accountdetails set balance=%s where account_number=%s ;", [li1[li_req[1]], li_req[1]])
+            passbok = {x:y for x,y in zip(df3["account_number"],df3["passbk"])}
+            cursor.execute("update passbook set passbk=%s where account_number=%s ;",[f"{passbok[li_req[0]]},-{Amount}", li_req[0]])
+            cursor.execute("update passbook set passbk=%s where account_number=%s ;",[f"{passbok[li_req[1]]},{Amount}", li_req[1]])
+            mycon.commit()
+            mycon.close()
+            return redirect(url_for('fundt', ft_val="fundt_success"))
+    elif not accFrom_valid:
+        return redirect(url_for('fundt', ft_val="fundt_accfInvalid"))
+    elif not accTo_valid:
+        return redirect(url_for('fundt', ft_val="fundt_acctInvalid"))
+    elif not emp_valid:
+        return redirect(url_for('fundt', ft_val="fundt_empInvalid"))
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
