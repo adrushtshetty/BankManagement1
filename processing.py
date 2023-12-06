@@ -41,6 +41,7 @@ def findIndex(emp,column,empID):
     :param empID: The value that must be found in the column
     :return: type: int The INDEX of the value in the Series object
     """
+    ind1=0
     for x in range(len(emp[column])):
         if empID == emp[column][x]:
             ind1 = x
