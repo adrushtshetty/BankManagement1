@@ -334,6 +334,13 @@
                                 {% if ft_val == "fundt_empInvalid" %}
                                     <div class="alert alert-danger"><strong>Invalid!</strong> Employee Id or Employee Pin is Wrong.</div>
                                 {% endif %}
+                                {% if ft_val == "fundt_senderBlocked" %}
+                                    <div class="alert alert-danger"><strong>Invalid!</strong> Sender's Account Blocked.</div>
+                                {% endif %}
+                                {% if ft_val == "fundt_receiverBlocked" %}
+                                    <div class="alert alert-danger"><strong>Invalid!</strong> Recipient's Account Blocked.</div>
+                                {% endif %}
+
                                 <div class="basic-form" style="margin: auto">
                                     <form action="{{ url_for('fundt_fun') }}", method="post">
                                         <div class="form-group row">

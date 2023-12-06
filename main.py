@@ -246,6 +246,12 @@ def fundt(ft_val):
 
 @app.route('/fundtransfer_func', methods=["POST"] )
 def fundt_fun():
+    def findIndex(emp, column, empID):
+        ind1=0
+        for x in range(len(emp[column])):
+            if empID == emp[column][x]:
+                ind1 = x
+        return ind1
 
     df1 = df.copy()
     df2 = emp.copy()
@@ -258,8 +264,10 @@ def fundt_fun():
     accFrom_valid = li_req[0] in li1.keys()
     accTo_valid = li_req[1] in li1.keys()
     emp_valid = [li_req[2], li_req[3]] in li2
+    senderBlk = len(df['account_status'][findIndex(df,'account_number',li_req[0])])==14
+    receiverBlk = len(df['account_status'][findIndex(df, 'account_number', li_req[1])])==14
 
-    if accFrom_valid and accTo_valid and emp_valid:
+    if accFrom_valid and accTo_valid and emp_valid and senderBlk and receiverBlk:
         Amount = float(request.form["Amt"])
         if Amount > li1[li_req[0]]:
             return redirect(url_for('fundt', ft_val="fundtransfer_insuffFund"))
@@ -282,6 +290,10 @@ def fundt_fun():
         return redirect(url_for('fundt', ft_val="fundt_acctInvalid"))
     elif not emp_valid:
         return redirect(url_for('fundt', ft_val="fundt_empInvalid"))
+    elif not senderBlk:
+        return redirect(url_for('fundt', ft_val="fundt_senderBlocked"))
+    elif not receiverBlk:
+        return redirect(url_for('fundt', ft_val="fundt_receiverBlocked"))
 
 
 
