@@ -47,6 +47,19 @@ def findIndex(emp,column,empID):
             ind1 = x
     return ind1
 
+def findNameIndex(emp,empID):
+    """
+    :param emp: Dataframe to parsed through
+    :param column: The column index
+    :param empID: The value that must be found in the column
+    :return: type: int The INDEX of the value in the Series object
+    """
+    ind1=0
+    for x in range(len(emp['account_holder'])):
+        if empID.upper() == emp['account_holder'][x].upper():
+            ind1 = x
+    return ind1
+
 def refreshBalanceFromPassBook(passBook):
     """
     :param passBook: Dataframe for the table passbook

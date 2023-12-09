@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, render_template, url_for, redirect
 import pandas as pd
 app = Flask(__name__)
 from processing import *
-
+from datetime import datetime
 import pandas as pd
 import mysql.connector as sqltor
 
@@ -29,6 +29,169 @@ def home():
 @app.route("/chequeBookClearance")
 def chkBkClrFrm():
     return render_template("chequeBookClearance.html")
+def calculate_age(birthdate):
+    today = datetime.now()
+    age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+    return age
+
+app.jinja_env.filters['calculate_age'] = calculate_age
+@app.route("/search")
+def search():
+    return render_template("change.html")
+
+@app.route("/search",methods=['POST'])
+def searchP():
+    s=int(request.form['sel'])
+    l =["q1","q2","q3",'q4','q5','q6','q7','q8','q9','q10','q11']
+
+    if s==6:
+        return redirect(url_for(l[int(s)]))
+    return redirect(url_for(l[int(s)], order='desc'))
+
+
+
+@app.route("/query1/<order>")
+def q1(order):
+    if order=="desc":
+        return render_template("q1.html",Sdf=df[["account_number","account_holder","contact_number",'balance','account_type']].sort_values(by='balance',ascending=False),orderS=order)
+    if order=="asc":
+        print(order)
+        return render_template("q1.html",Sdf=df[["account_number","account_holder","contact_number",'balance','account_type']].sort_values(by='balance',ascending=True),orderS=order)
+
+@app.route("/query2/<order>")
+def q2(order):
+    if order=="desc":
+        return render_template("q2.html",Sdf=df[["account_number","account_holder","contact_number",'balance','account_type']].sort_values(by='balance',ascending=False),orderS=order)
+    if order=="asc":
+        return render_template("q2.html",Sdf=df[["account_number","account_holder","contact_number",'balance','account_type']].sort_values(by='balance',ascending=True),orderS=order)
+
+@app.route("/query3/<order>")
+def q3(order):
+    if order=="desc":
+        return render_template("q3.html",Sdf=df[["account_number","account_holder","contact_number",'balance','account_type']].sort_values(by='balance',ascending=False),orderS=order)
+    if order=="asc":
+        return render_template("q3.html",Sdf=df[["account_number","account_holder","contact_number",'balance','account_type']].sort_values(by='balance',ascending=True),orderS=order)
+
+@app.route("/query4/<order>")
+def q4(order):
+    if order=="desc":
+        return render_template("q4.html",Sdf=df[["account_number","account_holder","contact_number",'balance','account_type']].sort_values(by='account_holder',ascending=False),orderS=order)
+    if order=="asc":
+        return render_template("q4.html",Sdf=df[["account_number","account_holder","contact_number",'balance','account_type']].sort_values(by='account_holder',ascending=True),orderS=order)
+
+@app.route("/query5/<order>")
+def q5(order):
+    if order=="desc":
+        return render_template("q5.html",Sdf=df[["account_number","account_holder","contact_number",'balance','date_column','account_type']].sort_values(by='date_column',ascending=False),orderS=order)
+        return render_template("q5.html",Sdf=df[["account_number","account_holder","contact_number",'balance','date_column','account_type']].sort_values(by='date_column',ascending=False),orderS=order)
+    if order=="asc":
+        return render_template("q5.html",Sdf=df[["account_number","account_holder","contact_number",'balance','date_column','account_type']].sort_values(by='date_column',ascending=True),orderS=order)
+
+@app.route("/query6/<order>")
+def q6(order):
+    if order=="desc":
+
+        return render_template("q6.html",Sdf=df[["account_number","account_holder","contact_number",'balance','dob','account_type']].sort_values(by='dob',ascending=False,key=lambda x: df['dob'].apply(calculate_age)),orderS=order)
+    if order=="asc":
+        return render_template("q6.html",Sdf=df[["account_number","account_holder","contact_number",'balance','dob','account_type']].sort_values(by='dob',ascending=True,key=lambda x: df['dob'].apply(calculate_age)),orderS=order)
+
+@app.route("/query7")
+def q7():
+    return render_template("q7.html",checkS="form")
+
+@app.route("/query7",methods=['POST'])
+def q7P():
+    a=int(request.form['con'])
+    a1=int(request.form['con1'])
+    if a==a1 and (a in df['account_number'].values):
+        t=df[["account_number","account_holder","contact_number",'address','balance','dob','account_type','account_status','date_column']].iloc[findIndex(df,'account_number',a)]
+        rsn = ""
+        if len(t['account_status'])>14:
+            rsn=reason(t['account_status'])
+        return render_template('q7.html', checkS="res", Sdf=t,rsn=rsn)
+
+
+    elif not(a in (df['account_number'].values)):
+        print("Here")
+        return render_template('q7.html',checkS="form",checkS1='notThere')
+    if a!=a1:
+        return render_template('q7.html',checkS="form",checkS1='change_error')
+
+@app.route("/query8")
+def q8():
+    return render_template("q8.html", checkS="form")
+
+@app.route("/query8", methods=['POST'])
+def q8P():
+    a = (request.form['con'])
+    a1 = (request.form['con1'])
+    if a == a1 and (a in df['contact_number'].values):
+        t = df[["account_number", "account_holder", "contact_number", 'address', 'balance', 'dob', 'account_type',
+                'account_status', 'date_column']].iloc[findIndex(df, 'contact_number', a)]
+        rsn = ""
+        if len(t['account_status']) > 14:
+            rsn = reason(t['account_status'])
+        return render_template('q8.html', checkS="res", Sdf=t, rsn=rsn)
+
+
+    elif not (a in (df['contact_number'].values)):
+        return render_template('q8.html', checkS="form", checkS1='notThere')
+    if a != a1:
+        return render_template('q8.html', checkS="form", checkS1='change_error')
+
+@app.route("/query9")
+def q9():
+    return render_template("q9.html", checkS="form")
+
+
+@app.route("/query9", methods=['POST'])
+def q9P():
+    a = (request.form['con'])
+    a1 = (request.form['con1'])
+    if a == a1 and (a in df['UID'].values):
+        t = df[["account_number", "account_holder", "contact_number", 'address', 'balance', 'dob', 'account_type',
+                'account_status', 'date_column']].iloc[findIndex(df, 'UID', a)]
+        rsn = ""
+        if len(t['account_status']) > 14:
+            rsn = reason(t['account_status'])
+        return render_template('q9.html', checkS="res", Sdf=t, rsn=rsn)
+
+
+    elif not (a in (df['UID'].values)):
+        return render_template('q9.html', checkS="form", checkS1='notThere')
+    if a != a1:
+        return render_template('q9.html', checkS="form", checkS1='change_error')
+
+@app.route("/query11")
+def q11():
+    return render_template("q11.html", checkS="form")
+
+
+@app.route("/query11", methods=['POST'])
+def q11P():
+    a = (request.form['con'])
+    a1 = (request.form['con1'])
+    if a.upper() == a1.upper() and (a.upper() in list(map(lambda x: x.upper(),list(df['account_holder'].values)))):
+        t = df[["account_number", "account_holder", "contact_number", 'address', 'balance', 'dob', 'account_type',
+                'account_status', 'date_column']].iloc[findNameIndex(df, a)]
+        rsn = ""
+        if len(t['account_status']) > 14:
+            rsn = reason(t['account_status'])
+        return render_template('q11.html', checkS="res", Sdf=t, rsn=rsn)
+
+
+    elif not (a.upper() in list(map(lambda x: x.upper(),list(df['account_holder'].values)))):
+        return render_template('q11.html', checkS="form", checkS1='notThere')
+    elif (a.upper() != a1.upper()):
+        return render_template('q11.html', checkS="form", checkS1='change_error')
+
+@app.route("/query10/<order>")
+def q10(order):
+    if order=="desc":
+        return render_template("q10.html",Sdf=df[["account_number","account_holder","contact_number",'balance','account_type','account_status']].sort_values(by='balance',ascending=False),orderS=order)
+    if order=="asc":
+        return render_template("q10.html",Sdf=df[["account_number","account_holder","contact_number",'balance','account_type','account_status']].sort_values(by='balance',ascending=True),orderS=order)
+
 
 @app.route("/chequeBookClearanceKEYFailed")
 def chequeBookClearanceKEYFailed():
