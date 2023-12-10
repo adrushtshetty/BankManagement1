@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, render_template, url_for, redirect
 import pandas as pd
 app = Flask(__name__)
+import random
 from processing import *
 from datetime import datetime
 import pandas as pd
@@ -26,6 +27,20 @@ def login():
         else:
             return redirect(url_for('home'))
     return render_template('login.html', error=error)
+
+@app.route('/client', methods=['GET', 'POST'])
+def loginClient():
+    error = None
+    if request.method == 'POST':
+        if request.form['username'] != 'admin' or request.form['password'] != 'dev':
+            error = 'Invalid Credentials. Please try again.'
+        else:
+            return redirect(url_for('clienthome'))
+    return render_template('loginc.html', error=error)
+
+@app.route("/homec")
+def clienthome():
+    return render_template("indexc.html")
 
 @app.route("/home")
 def home():
@@ -422,8 +437,8 @@ def fundt_fun():
                 ind1 = x
         return ind1
 
-    df1 = df.copy()
-    df2 = emp.copy()
+    df1 = df
+    df2 = emp
     df3 = passBook
 
     li1 = {x: y for x, y in zip(df1["account_number"], df1["balance"])}  # This is a Dictionary
@@ -448,8 +463,11 @@ def fundt_fun():
             cursor.execute("update accountdetails set balance=%s where account_number=%s ;", [li1[li_req[0]], li_req[0]])
             cursor.execute("update accountdetails set balance=%s where account_number=%s ;", [li1[li_req[1]], li_req[1]])
             passbok = {x:y for x,y in zip(df3["account_number"],df3["passbk"])}
-            cursor.execute("update passbook set passbk=%s where account_number=%s ;",[f"{passbok[li_req[0]]},-{Amount}", li_req[0]])
-            cursor.execute("update passbook set passbk=%s where account_number=%s ;",[f"{passbok[li_req[1]]},{Amount}", li_req[1]])
+            # correction for updating into table passbook from [10000.0, 10000.0, -3000.0, 0.9, 2000.0, -1000.0, -1000.0, -1000.0],-100.0 to [10000.0, 10000.0, -3000.0, 0.9, 2000.0, -1000.0, -1000.0, -1000.0, -100.0]
+            passbok[(li_req[0])] = str(list(map(float, passbok[(li_req[0])][1:-1].split(", "))) + [-Amount])
+            passbok[(li_req[1])] = str(list(map(float, passbok[(li_req[1])][1:-1].split(", "))) + [Amount])
+            cursor.execute("update passbook set passbk=%s where account_number=%s ;",[f"{passbok[li_req[0]]}", li_req[0]])
+            cursor.execute("update passbook set passbk=%s where account_number=%s ;",[f"{passbok[li_req[1]]}", li_req[1]])
             mycon.commit()
             mycon.close()
             return redirect(url_for('fundt', ft_val="fundt_success"))
@@ -614,16 +632,13 @@ def contact():
     else:
         return redirect(url_for("Statuscno", check='change_error'))
 
-
 @app.route("/statusCn/<check>")
 def Statuscno(check):
     return render_template("Contact_number.html", check=check)
 
-
 @app.route("/em")
 def em():
     return render_template("email.html")
-
 
 @app.route("/em", methods=["POST"])
 def email():
@@ -645,11 +660,9 @@ def email():
     else:
         return redirect(url_for("StatusEm", check='change_error'))
 
-
 @app.route("/statusEm/<check>")
 def StatusEm(check):
     return render_template("email.html", check=check)
-
 
 @app.route("/add")
 def add():
@@ -680,11 +693,9 @@ def address():
 def StatusAdr(check):
     return render_template("address.html", check=check)
 
-
 @app.route("/acchol")
 def acchol():
     return render_template("Account_Holder.html")
-
 
 @app.route("/accounthol", methods=["POST"])
 def accounthol():
@@ -743,11 +754,211 @@ def acctyp():
 def status(check):
     return render_template("change1.html",check=check)
 
-if __name__ == "__main__":
-    app.run(debug=True)
+
+@app.route("/balanceenq/<check>")
+def balenq(check):
+    return render_template("balanceenq.html", check=check)
+
+@app.route("/passbook/<check>")
+def passbook(check):
+    return render_template("passbook.html", check=check)
+
+@app.route("/passbook/<check>", methods=["POST"])
+def passbook2(check):
+    otp = request.form["otp"]
+    with open('d.txt', 'r') as file:
+        content = file.read().splitlines()
+    if len(content) == 1:
+        d = content[0]
+    file.close()
+    with open('t.txt', 'r') as file:
+        content = file.read().splitlines()
+    if len(content) == 1:
+        t = content[0]
+    file.close()
+
+    if int(d )== int(otp):
+        check = "success"
+        data=zip((list(map(float,passBook['passbk'][findIndex(passBook,'account_number',df['account_number'][findIndex(df,'email',t)])][1:-1].split(", ")))),(list(map(lambda x: x.strftime("%d-%m-%Y"),(list(map(lambda x : (datetime.strptime(x, "%Y-%m-%d")),(list(map(lambda x: x[1:-1],passBook['date'][findIndex(passBook,'account_number',df['account_number'][findIndex(df,'email',t)])][1:-1].split(", ")))))))))))
+        return render_template("passbook.html", check=check, Sdf=passBook,St=t,dataS=data)
+    else:
+        return render_template("passbook.html", check="failed")
+
+@app.route("/passbook", methods=["POST"])
+def passbook1():
+    a = request.form["accname"]
+    b = request.form["email"]
+    mycon = sqltor.connect(host="localhost", user="root", passwd="admin", database="bank_management")
+    dfa = pd.read_sql(f"select * from accountdetails;", mycon)
+    if int(a) in list(dfa["account_number"].values):
+        print(a, type(a), dfa["email"][findIndex(dfa, "account_number", a)],b ,b==dfa["email"][findIndex(dfa, "account_number", a)],type(dfa["account_holder"][0]))
+        if b == dfa["email"][findIndex(dfa, "account_number", a)]:
+            global t
+            t = b
+
+            with open('t.txt', 'w') as file:
+                file.write(str(t))
+            file.close()
+            global d
+            d = random.randint(100000, 999999)
+            with open('d.txt', 'w') as file:
+                file.write(str(d))
+            file.close()
+
+            from email.message import EmailMessage
+            import ssl
+            import smtplib
+
+            email_sender = "drdev.maill@gmail.com"
+            email_password = "mmieeonadmnrylqz"
+            email_receiver = [f"{b}"]
+            subject = "balance enquiry"
+            body = """
+                Dear Customer,
+
+                Your OTP for balance enquiry is {d}
+
+                Sincerely,
+
+                    ShettyShrinivasDawoodKokrady Co-Operative Bank of India
+
+                """.format(d=d)
+            em = EmailMessage()
+            em['From'] = email_sender
+            em['To'] = email_receiver
+            em['subject'] = subject
+            em.set_content(body)
+            context = ssl.create_default_context()
+            with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+                smtp.login(email_sender, email_password)
+                smtp.sendmail(email_sender, email_receiver, em.as_string())
+            return redirect(url_for('passbook', check="otp"))
+
+        else:
+            return redirect(url_for('passbook', check="noemail"))
+    else:
+        return redirect(url_for('passbook', check="noacc"))
+
+@app.route("/balanceenq/<check>", methods=["POST"])
+def balenq2(check):
+    otp = request.form["otp"]
+    print(t, otp)
+    if d==int(otp):
+        balance = dfa["balance"][findIndex(dfa, 'email', t)]
+        check = "success"
+        return render_template("balanceenq.html", check=check, balances=balance)
+    else:
+        return render_template("balanceenq.html", check="failed")
 
 
+@app.route("/balenceenq", methods=["POST"])
+def balenq1():
+    a = request.form["accname"]
+    b = request.form["email"]
+    mycon = sqltor.connect(host="localhost", user="root", passwd="admin", database="bank_management")
+    dfa = pd.read_sql(f"select * from accountdetails;", mycon)
+    if a in list(dfa["account_holder"].values):
+        print(a, type(a), dfa["account_holder"][0], type(dfa["account_holder"][0]))
+        if b == dfa["email"][findIndex(dfa, "email", a)]:
+            global t
+            t = b
+            global d
+            d = random.randint(100000, 999999)
+            from email.message import EmailMessage
+            import ssl
+            import smtplib
 
+            email_sender = "drdev.maill@gmail.com"
+            email_password = "mmieeonadmnrylqz"
+            email_receiver = [f"{b}"]
+            subject = "balance enquiry"
+            body = """
+                Dear Customer,
+
+                Your OTP for balance enquiry is {d}
+
+                Sincerely,
+
+                    ShettyShrinivasDawoodKokrady Co-Operative Bank of India
+
+                """.format(d=d)
+            em = EmailMessage()
+            em['From'] = email_sender
+            em['To'] = email_receiver
+            em['subject'] = subject
+            em.set_content(body)
+            context = ssl.create_default_context()
+            with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+                smtp.login(email_sender, email_password)
+                smtp.sendmail(email_sender, email_receiver, em.as_string())
+
+            return redirect(url_for('balenq', check="otp"))
+
+
+        else:
+            return redirect(url_for('balenq', check="noemail"))
+    else:
+        return redirect(url_for('balenq', check="noacc"))
+
+
+@app.route("/loanapp")
+def loanapp():
+    return render_template("loanapplication.html")
+
+
+@app.route("/loanapp", methods=["POST"])
+def loanapp1():
+    a = request.form["name"]
+    b = request.form["email"]
+    c = request.form["address"]
+    d = request.form["accnum"]
+    e = request.form["occ"]
+    f = request.form["uid"]
+    g = request.form["amount"]
+    h = request.form["salary"]
+    if d in dfa["account_number"].values:
+        if a in dfa["account_holder"].values:
+            if b in dfa["email"].values:
+                if f in dfa["UID"].values:
+                    from email.message import EmailMessage
+                    import ssl
+                    import smtplib
+
+                    name = request.form['name']
+                    subject = request.form['subject']
+                    message = request.form['message']
+                    mail = request.form['email']
+
+                    email_sender = "drdev.maill@gmail.com"
+                    email_password = "mmieeonadmnrylqz"
+                    email_receiver = ["a101reasons@gmail.com"]
+                    body = """
+                            New Personal Loan Application,
+
+                            Details:
+
+                            Account Number: {number}
+                            Name: {name}
+                            Email Address: {email}
+                            Address: {address}
+                            Occupation: {occupation}
+                            Government UID: {uid}
+                            Amount Required: {amount}
+                            salary: {salary}
+
+
+                            """.format(number=d, name=a, address=c, email=b, occupation=e, amount=g, salary=h, uid=f)
+                    em = EmailMessage()
+                    em['From'] = email_sender
+                    em['To'] = email_receiver
+                    em['subject'] = subject
+                    em.set_content(body)
+                    context = ssl.create_default_context()
+                    with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+                        smtp.login(email_sender, email_password)
+                        smtp.sendmail(email_sender, email_receiver, em.as_string())
+
+    return render_template("loanapplication.html")
 
 if __name__ == '__main__':
     app.run(debug=True)

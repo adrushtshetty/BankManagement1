@@ -201,3 +201,43 @@ t=567890123
 # modified_data = [[10000, 10000, -3000, 0.9], [-2000, 500, 4000, 0.5], [5000, 5000, 0, 0.0], [-1000, 1000, 3000, 0.1], [10000, 6000, -1000, 0.7], [-2000, 7000, -2000, 0.75], [500, 2000, 3000, 0.25], [2000, 2000, 3500, 0.8], [0, 1500, 0, 0.25], [10000, 1000, 1000, 0.5], [-1000, 2000, 1000, 0.95], [2000, 2000, 4000, 0.9], [10000, 20000, 2000, 0.75], [-1000, 1000, 3000, 0.1], [15000, 15000, 0, 0.2], [8000, 901, 0, 0.0], [-500, 1000, 8000, 0.0], [-3000, 6000, -544.0], [8000, 1000, 12, 0.0], [8000, 901, 0, 0.0], [8000, 1000, 12, 0.0], [4000, 1000, 678, 0.0], [-500, 500, 1234, 0.0], [-500, 500, 1234, 0.0], [4000, 1000, 678, 0.0]]
 #
 # print(len(modified_data))
+
+f=123234567
+t=123345678
+a=float(100)
+df3 = passBook
+passbok = {x:y for x,y in zip(df3["account_number"],df3["passbk"])}
+passbok[f]=str(list(map(float,passbok[f][1:-1].split(", ")))+[-a])
+passbok[t]=str(list(map(float,passbok[f][1:-1].split(", ")))+[a])
+# print(passbok[f])
+# print(passbok[t])
+# print(type(list(passbok.keys())[0]))
+# l=[10000.0, 10000.0, -3000.0, 0.9, 2000.0, -1000.0, -1000.0, -1000.0, -100.0]
+#
+# print(sum(l))
+# a="adrusthshetty@gmail.com"
+# b="adrushtshetty@gmail.com"
+# print(a==b)
+# print(str(list(map(float,passbok[f][1:-1].split(", ")))))
+# print(str(list(map(float,passbok[t][1:-1].split(", ")))))
+# print()
+from datetime import datetime
+
+print(list(map(lambda x: x.strftime("%d-%m-%Y"),(list(map(lambda x : (datetime.strptime(x, "%Y-%m-%d")),(list(map(lambda x: x[1:-1],passBook['date'][findIndex(passBook,'account_number',f)][1:-1].split(", "))))))))))
+
+# from datetime import datetime
+#
+# # Original list of strings in "YYYY-MM-DD" format
+# original_dates = ["2023-01-15", "2023-02-20", "2023-03-25", "2023-04-30"]
+#
+# datetime_objects = [datetime.strptime(date, "%Y-%m-%d") for date in original_dates]
+#
+# # Convert datetime objects to strings in "DD-MM-YYYY" format
+# formatted_dates = [date.strftime("%d-%m-%Y") for date in datetime_objects]
+#
+# # Print the original and formatted dates
+# print("Original Dates:", original_dates)
+# print("Formatted Dates:", formatted_dates)
+t='adrushtshetty@gmail.com'
+print(df['account_number'][findIndex(df,'email',t)])
+print(list(map(float,passBook['passbk'][findIndex(passBook,'account_number',df['account_number'][findIndex(df,'email',t)])][1:-1].split(", "))))
