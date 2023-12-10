@@ -754,6 +754,9 @@ def acctyp():
 def status(check):
     return render_template("change1.html",check=check)
 
+@app.route("/chequeBookOrdering/<check>")
+def cheque(check):
+    return render_template("cheque.html", check=check)
 
 @app.route("/balanceenq/<check>")
 def balenq(check):
@@ -783,6 +786,103 @@ def passbook2(check):
         return render_template("passbook.html", check=check, Sdf=passBook,St=t,dataS=data)
     else:
         return render_template("passbook.html", check="failed")
+
+@app.route("/chequeBookOrdering/<check>", methods=["POST"])
+def cheque2(check):
+    if check=="placeOrder":
+        s = request.form['accname']
+        from email.message import EmailMessage
+        import ssl
+        import smtplib
+
+        email_sender = "drdev.maill@gmail.com"
+        email_password = "mmieeonadmnrylqz"
+        email_receiver = ['adrushtshetty@gmail.com']
+        subject = "Cheque Book Ordering"
+        body = """
+            Dear Admin,
+            A cheque Book of {s} size was request for the account {d}
+            Sincerely,
+
+                ShettyShrinivasDawoodKokrady Co-Operative Bank of India
+
+            """.format(d=df['account_number'][findIndex(df,'email',t)],s=s)
+        em = EmailMessage()
+        em['From'] = email_sender
+        em['To'] = email_receiver
+        em['subject'] = subject
+        em.set_content(body)
+        context = ssl.create_default_context()
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+            smtp.login(email_sender, email_password)
+            smtp.sendmail(email_sender, email_receiver, em.as_string())
+
+        return render_template("cheque.html", check="done")
+    else:
+        otp = request.form["otp"]
+        print(t, otp)
+        if d==int(otp):
+            balance = dfa["balance"][findIndex(dfa, 'email', t)]
+            check = "success"
+            return render_template("cheque.html", check=check, balances=balance)
+        else:
+            return render_template("cheque.html", check="failed")
+
+@app.route("/chequeBookOrdering", methods=["POST"])
+def cheque1():
+    a = int(request.form["accname"])
+    b = request.form["email"]
+    if a in list(dfa["account_number"].values):
+        print(a, type(a), dfa["account_holder"][0], type(dfa["account_holder"][0]))
+        if b == dfa["email"][findIndex(dfa, "email", a)]:
+            global t
+            t = b
+            with open('t.txt', 'w') as file:
+                file.write(str(t))
+            file.close()
+
+            global d
+            d = random.randint(100000, 999999)
+            with open('d.txt', 'w') as file:
+                file.write(str(d))
+            file.close()
+
+            from email.message import EmailMessage
+            import ssl
+            import smtplib
+
+            email_sender = "drdev.maill@gmail.com"
+            email_password = "mmieeonadmnrylqz"
+            email_receiver = [f"{b}"]
+            subject = "balance enquiry"
+            body = """
+                Dear Customer,
+
+                Your OTP for balance enquiry is {d}
+
+                Sincerely,
+
+                    ShettyShrinivasDawoodKokrady Co-Operative Bank of India
+
+                """.format(d=d)
+            em = EmailMessage()
+            em['From'] = email_sender
+            em['To'] = email_receiver
+            em['subject'] = subject
+            em.set_content(body)
+            context = ssl.create_default_context()
+            with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+                smtp.login(email_sender, email_password)
+                smtp.sendmail(email_sender, email_receiver, em.as_string())
+
+            return redirect(url_for('cheque', check="otp"))
+
+
+        else:
+            return redirect(url_for('cheque', check="noemail"))
+    else:
+        return redirect(url_for('cheque', check="noacc"))
+
 
 @app.route("/passbook", methods=["POST"])
 def passbook1():
