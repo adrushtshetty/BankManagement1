@@ -45,6 +45,12 @@
                 <span class="ml-auto"><a href="#" class="forgot-pass">Forgot Password</a></span> 
               </div>
 
+              {% if stat!='clear' %}
+              <div class="d-flex mb-5 align-items-center">
+                <div class="alert alert-danger align-items-center"><strong>Error!</strong> {{error}}</div>
+              </div>
+              {% endif %}
+
               <input type="submit" class="btn btn-block btn-primary">
 
             </form>

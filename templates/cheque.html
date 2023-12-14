@@ -1,18 +1,19 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Focus - Bootstrap Admin Dashboard </title>
+    <title>Project W - Client Side Home page </title>
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon.png">
     <link rel="stylesheet" href="/static/vendor/owl-carousel/css/owl.carousel.min.css">
     <link rel="stylesheet" href="/static/vendor/owl-carousel/css/owl.theme.default.min.css">
     <link href="/static/vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
     <link href="/static/css/style.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
 </head>
@@ -43,10 +44,10 @@
             Nav header start
         ***********************************-->
         <div class="nav-header">
-            <a href="/" class="brand-logo">
-                <img class="logo-abbr" src="/static/images/logo.png" alt="">
-                <img class="logo-compact" src="/static/images/logo-text.png" alt="">
-                <img class="brand-title" src="/static/images/logo-text.png" alt="">
+            <a href="index.html" class="brand-logo">
+                <img class="logo-abbr" src="static/images/logo.png" alt="">
+                <img class="logo-compact" src="static/images/a4.png"  alt="">
+                <img class="brand-title" src="static/images/a4.png" alt="">
             </a>
 
             <div class="nav-control">
@@ -66,94 +67,19 @@
             <div class="header-content">
                 <nav class="navbar navbar-expand">
                     <div class="collapse navbar-collapse justify-content-between">
-                        <div class="header-left">
-                            <div class="search_bar dropdown">
-                                <span class="search_icon p-3 c-pointer" data-toggle="dropdown">
-                                    <i class="mdi mdi-magnify"></i>
-                                </span>
-                                <div class="dropdown-menu p-0 m-0">
-                                    <form>
-                                        <input class="form-control" type="search" placeholder="Search" aria-label="Search">
-                                    </form>
-                                </div>
-                            </div>
                         </div>
 
                         <ul class="navbar-nav header-right">
-                            <li class="nav-item dropdown notification_dropdown">
-                                <a class="nav-link" href="#" role="button" data-toggle="dropdown">
-                                    <i class="mdi mdi-bell"></i>
-                                    <div class="pulse-css"></div>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <ul class="list-unstyled">
-                                        <li class="media dropdown-item">
-                                            <span class="success"><i class="ti-user"></i></span>
-                                            <div class="media-body">
-                                                <a href="#">
-                                                    <p><strong>Martin</strong> has added a <strong>customer</strong> Successfully
-                                                    </p>
-                                                </a>
-                                            </div>
-                                            <span class="notify-time">3:20 am</span>
-                                        </li>
-                                        <li class="media dropdown-item">
-                                            <span class="primary"><i class="ti-shopping-cart"></i></span>
-                                            <div class="media-body">
-                                                <a href="#">
-                                                    <p><strong>Jennifer</strong> purchased Light Dashboard 2.0.</p>
-                                                </a>
-                                            </div>
-                                            <span class="notify-time">3:20 am</span>
-                                        </li>
-                                        <li class="media dropdown-item">
-                                            <span class="danger"><i class="ti-bookmark"></i></span>
-                                            <div class="media-body">
-                                                <a href="#">
-                                                    <p><strong>Robin</strong> marked a <strong>ticket</strong> as unsolved.
-                                                    </p>
-                                                </a>
-                                            </div>
-                                            <span class="notify-time">3:20 am</span>
-                                        </li>
-                                        <li class="media dropdown-item">
-                                            <span class="primary"><i class="ti-heart"></i></span>
-                                            <div class="media-body">
-                                                <a href="#">
-                                                    <p><strong>David</strong> purchased Light Dashboard 1.0.</p>
-                                                </a>
-                                            </div>
-                                            <span class="notify-time">3:20 am</span>
-                                        </li>
-                                        <li class="media dropdown-item">
-                                            <span class="success"><i class="ti-image"></i></span>
-                                            <div class="media-body">
-                                                <a href="#">
-                                                    <p><strong> James.</strong> has added a<strong>customer</strong> Successfully
-                                                    </p>
-                                                </a>
-                                            </div>
-                                            <span class="notify-time">3:20 am</span>
-                                        </li>
-                                    </ul>
-                                    <a class="all-notification" href="#">See all notifications <i
-                                            class="ti-arrow-right"></i></a>
-                                </div>
-                            </li>
                             <li class="nav-item dropdown header-profile">
                                 <a class="nav-link" href="#" role="button" data-toggle="dropdown">
                                     <i class="mdi mdi-account"></i>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right">
-                                    <a href="/static/app-profile.html" class="dropdown-item">
+                                    <a href="static/app-profile.html" class="dropdown-item">
                                         <i class="icon-user"></i>
-                                        <span class="ml-2">Profile </span>
+                                        <span class="ml-2">{{Lmail}} </span>
                                     </a>
-                                    <a href="/static/email-inbox.html" class="dropdown-item">
-                                        <i class="icon-envelope-open"></i>
-                                        <span class="ml-2">Inbox </span>
-                                    </a>
-                                    <a href="/static/page-login.html" class="dropdown-item">
+                                    <a href="/client" class="dropdown-item">
                                         <i class="icon-key"></i>
                                         <span class="ml-2">Logout </span>
                                     </a>
@@ -164,7 +90,7 @@
                 </nav>
             </div>
         </div>
-        <!--**********************************
+         <!--**********************************
             Header end ti-comment-alt
         ***********************************-->
 
@@ -174,117 +100,25 @@
         <div class="quixnav">
             <div class="quixnav-scroll">
                 <ul class="metismenu" id="menu">
-                    <li class="nav-label first">Main Menu</li>
-                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
-                                class="icon icon-single-04"></i><span class="nav-text">Dashboard</span></a>
-                        <ul aria-expanded="false">
-                            <li><a href="/">Dashboard 1</a></li>
-                            <li><a href="/some">Dashboard 2</a></li>
-                            <li><a href="/okok">Dashboard 3</a></li>
-                        </ul>
+<!--                    <li class="nav-label first">Admin Features</li>-->
+<!--                    <li><a class="has-arrow" href="/chequeBookClearance" aria-expanded="false"><i class="fa-solid fa-money-check"></i><span class="nav-text">Cheque Book Clearance</span></a>-->
+<!--                        <li><a class="has-arrow" href="/fundtransfer/fundtransfer" aria-expanded="false"><i class="fa-solid fa-money-bill-transfer"></i><span class="nav-text">Fund Transfer</span></a>-->
+<!--                    <li><a class="has-arrow" href="/search" aria-expanded="false"><i class="fa-solid fa-database"></i><span class="nav-text">Search Queries</span></a>-->
+<!--                    <li><a class="has-arrow" href="/accblock" aria-expanded="false"><i class="fa-solid fa-lock"></i><span class="nav-text">Account Block</span></a>-->
+<!--                    <li><a class="has-arrow" href="/accunblock" aria-expanded="false"><i class="fa-solid fa-lock-open"></i><span class="nav-text">Account Un-Block</span></a>-->
+<!--                    <li><a class="has-arrow" href="/change" aria-expanded="false"><i class="fa-solid fa-gears"></i><span class="nav-text">Edit Account Details</span></a>-->
+<!--                        <ul aria-expanded="false">-->
+<!--                            <li><a href="./index.html">Dashboard 1</a></li>-->
+<!--                            <li><a href="./index2.html">Dashboard 2</a></li>-->
+<!--                        </ul>-->
                     </li>
-                    <li class="nav-label">Apps</li>
-                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
-                                class="icon icon-app-store"></i><span class="nav-text">Apps</span></a>
-                        <ul aria-expanded="false">
-                            <li><a href="/hmmm">Profile</a></li>
-                            <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Email</a>
-                                <ul aria-expanded="false">
-                                    <li><a href="/static/email-compose.html">Compose</a></li>
-                                    <li><a href="/static/email-inbox.html">Inbox</a></li>
-                                    <li><a href="/static/email-read.html">Read</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="/static/app-calender.html">Calendar</a></li>
-                        </ul>
-                    </li>
-                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
-                                class="icon icon-chart-bar-33"></i><span class="nav-text">Charts</span></a>
-                        <ul aria-expanded="false">
-                            <li><a href="/static/chart-flot.html">Flot</a></li>
-                            <li><a href="/static/chart-morris.html">Morris</a></li>
-                            <li><a href="/static/chart-chartjs.html">Chartjs</a></li>
-                            <li><a href="/static/chart-chartist.html">Chartist</a></li>
-                            <li><a href="/static/chart-sparkline.html">Sparkline</a></li>
-                            <li><a href="/static/chart-peity.html">Peity</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-label">Components</li>
-                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
-                                class="icon icon-world-2"></i><span class="nav-text">Bootstrap</span></a>
-                        <ul aria-expanded="false">
-                            <li><a href="/static/ui-accordion.html">Accordion</a></li>
-                            <li><a href="/static/ui-alert.html">Alert</a></li>
-                            <li><a href="/static/ui-badge.html">Badge</a></li>
-                            <li><a href="/static/ui-button.html">Button</a></li>
-                            <li><a href="/static/ui-modal.html">Modal</a></li>
-                            <li><a href="/static/ui-button-group.html">Button Group</a></li>
-                            <li><a href="/static/ui-list-group.html">List Group</a></li>
-                            <li><a href="/static/ui-media-object.html">Media Object</a></li>
-                            <li><a href="/static/ui-card.html">Cards</a></li>
-                            <li><a href="/static/ui-carousel.html">Carousel</a></li>
-                            <li><a href="/static/ui-dropdown.html">Dropdown</a></li>
-                            <li><a href="/static/ui-popover.html">Popover</a></li>
-                            <li><a href="/static/ui-progressbar.html">Progressbar</a></li>
-                            <li><a href="/static/ui-tab.html">Tab</a></li>
-                            <li><a href="/static/ui-typography.html">Typography</a></li>
-                            <li><a href="/static/ui-pagination.html">Pagination</a></li>
-                            <li><a href="/static/ui-grid.html">Grid</a></li>
-
-                        </ul>
-                    </li>
-
-                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
-                                class="icon icon-plug"></i><span class="nav-text">Plugins</span></a>
-                        <ul aria-expanded="false">
-                            <li><a href="/static/uc-select2.html">Select 2</a></li>
-                            <li><a href="/static/uc-nestable.html">Nestedable</a></li>
-                            <li><a href="/static/uc-noui-slider.html">Noui Slider</a></li>
-                            <li><a href="/static/uc-sweetalert.html">Sweet Alert</a></li>
-                            <li><a href="/static/uc-toastr.html">Toastr</a></li>
-                            <li><a href="/static/map-jqvmap.html">Jqv Map</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="widget-basic.html" aria-expanded="false"><i class="icon icon-globe-2"></i><span
-                                class="nav-text">Widget</span></a></li>
-                    <li class="nav-label">Forms</li>
-                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
-                                class="icon icon-form"></i><span class="nav-text">Forms</span></a>
-                        <ul aria-expanded="false">
-                            <li><a href="/static/form-element.html">Form Elements</a></li>
-                            <li><a href="/static/form-wizard.html">Wizard</a></li>
-                            <li><a href="/static/form-editor-summernote.html">Summernote</a></li>
-                            <li><a href="form-pickers.html">Pickers</a></li>
-                            <li><a href="form-validation-jquery.html">Jquery Validate</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-label">Table</li>
-                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
-                                class="icon icon-layout-25"></i><span class="nav-text">Table</span></a>
-                        <ul aria-expanded="false">
-                            <li><a href="table-bootstrap-basic.html">Bootstrap</a></li>
-                            <li><a href="table-datatable-basic.html">Datatable</a></li>
-                        </ul>
-                    </li>
-
-                    <li class="nav-label">Extra</li>
-                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
-                                class="icon icon-single-copy-06"></i><span class="nav-text">Pages</span></a>
-                        <ul aria-expanded="false">
-                            <li><a href="/static/page-register.html">Register</a></li>
-                            <li><a href="/static/page-login.html">Login</a></li>
-                            <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Error</a>
-                                <ul aria-expanded="false">
-                                    <li><a href="/static/page-error-400.html">Error 400</a></li>
-                                    <li><a href="/static/page-error-403.html">Error 403</a></li>
-                                    <li><a href="/static/page-error-404.html">Error 404</a></li>
-                                    <li><a href="/static/page-error-500.html">Error 500</a></li>
-                                    <li><a href="/static/page-error-503.html">Error 503</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="/static/page-lock-screen.html">Lock Screen</a></li>
-                        </ul>
-                    </li>
+                    <li class="nav-label">Client Features </li>
+                    <li><a class="has-arrow" href="/balanceenq/<check>" aria-expanded="false"><i class="fa-solid fa-money-bills"></i><span class="nav-text">Check Balance</span></a>
+                        <li><a class="has-arrow" href="/loanapp" aria-expanded="false"><i class="fa-solid fa-landmark"></i><span class="nav-text">Loan Application</span></a>
+                    <li><a class="has-arrow" href="/passbook/<check>" aria-expanded="false"><i class="fa-solid fa-money-check"></i><span class="nav-text">Passbook</span></a>
+                    <li><a class="has-arrow" href="/chequeBookOrdering/<check>" aria-expanded="false"><i class="fa-solid fa-lock"></i><span class="nav-text">Cheque Book Ordering</span></a>
+                    <li><a class="has-arrow" href="/card_edit/<check>" aria-expanded="false"><i class="fa-regular fa-credit-card"></i><span class="nav-text">Debit Card Settings</span></a>
+                    <li><a class="has-arrow" href="/fundtransfer/fundtransfer" aria-expanded="false"><i class="fa-solid fa-money-bill-transfer"></i><span class="nav-text">Fund Transfer</span></a>
                 </ul>
             </div>
 
@@ -356,6 +190,11 @@
                                         <div class="form-group row">
                                             <label class="col-sm-2 col-form-label">Cheque Book Size</label>
                                             <div class="col-sm-10">
+                                                <select class="form-control" name="accname" required>
+                                            <option value="" disabled selected hidden>Select field</option>
+                                            <option value="60" >60 Pages Cheque Book</option>
+                                            <option value="30">30 Pages Cheque Book</option>
+                                        </select>
                                                 <input type="number" class="form-control" placeholder="Account Number" style="width: 60%" name="accname" required>
                                             </div>
                                         </div>

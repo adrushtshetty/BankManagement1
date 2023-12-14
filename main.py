@@ -18,29 +18,87 @@ dat = pd.read_sql(f"select * from stat_acc;", mycon)
 date=dat.copy()
 mycon.close()
 
+
+@app.route('/')
+def l():
+    return render_template('login.html',stat='clear')
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
     error = None
-    if request.method == 'POST':
-        if request.form['username'] != 'admin' or request.form['password'] != 'dev':
-            error = 'Invalid Credentials. Please try again.'
+    empID=request.form['username']
+    empPass=request.form['password']
+    if empID in emp['empid'].values:
+        if emp['pin'][findIndex(emp, 'empid', empID)] == empPass:
+            ind = findIndex(emp, 'empid', empID)
+            with open('empID.txt', 'w') as file:
+                file.write(f"{empID}")
+            file.close()
+            with open('eind.txt', 'w') as file:
+                file.write(f"{ind}")
+            file.close()
+            balance=(sum(list(df['balance'].values)))
+            cust=(len(list(df['balance'].values)))
+            return render_template('index.html', Lmail='{}'.format(empID),balance='{}'.format(balance),lenC='{}'.format(cust))
         else:
-            return redirect(url_for('home'))
+            error = 'Invalid Credentials. Please try again.'
+    else:
+        error = 'Invalid Credentials. Account Not Found.'
     return render_template('login.html', error=error)
+
+
+@app.route("/client")
+def lgoinC():
+    return render_template("loginc.html",stat="clear")
 
 @app.route('/client', methods=['GET', 'POST'])
 def loginClient():
     error = None
-    if request.method == 'POST':
-        if request.form['username'] != 'admin' or request.form['password'] != 'dev':
-            error = 'Invalid Credentials. Please try again.'
+    mail=request.form['username']
+    Lmail=mail
+    key=request.form['password']
+    if mail in df['email'].values:
+        if df['security_code'][findIndex(df,'email',mail)]==key:
+            ind=findIndex(df,'email',mail)
+            with open('Lmail.txt', 'w') as file:
+                file.write(f"{Lmail}")
+            file.close()
+            with open('ind.txt', 'w') as file:
+                file.write(f"{ind}")
+            file.close()
+            data = zip((list(map(float, passBook['passbk'][findIndex(passBook, 'account_number', df['account_number'][findIndex(df, 'email', mail)])][1:-1].split(", "))))[::-1], (list(map(lambda x: x.strftime("%d-%m-%Y"), (list(map(lambda x: (datetime.strptime(x, "%Y-%m-%d")), (list(map(lambda x: x[1:-1], passBook['date'][findIndex(passBook,'account_number', df['account_number'][findIndex(df,'email', mail)])][1:-1].split(", "))))))))))[::-1])
+            return render_template('indexc.html',Lmail='{}'.format(mail),Pbk=passBook,Db=df,IND=ind,dataS=data)
+
         else:
-            return redirect(url_for('clienthome'))
+            error = 'Invalid Credentials. Please try again.'
+    else:
+        error = 'Invalid Credentials. Account Not Found.'
     return render_template('loginc.html', error=error)
 
 @app.route("/homec")
 def clienthome():
-    return render_template("indexc.html")
+    with open('Lmail.txt', 'r') as file:
+        content = file.read().splitlines()
+    if len(content) == 1:
+        Lmail= str(content[0])
+    with open('ind.txt', 'r') as file:
+        content = file.read().splitlines()
+    if len(content) == 1:
+        ind= int(content[0])
+    ind = findIndex(df, 'email', Lmail)
+    data = zip((list(map(float, passBook['passbk'][findIndex(passBook, 'account_number',
+                                                             df['account_number'][findIndex(df, 'email', Lmail)])][
+                                1:-1].split(", "))))[::-1], (list(map(lambda x: x.strftime("%d-%m-%Y"), (list(
+        map(lambda x: (datetime.strptime(x, "%Y-%m-%d")), (list(map(lambda x: x[1:-1], passBook['date'][
+                                                                                           findIndex(passBook,
+                                                                                                     'account_number',
+                                                                                                     df[
+                                                                                                         'account_number'][
+                                                                                                         findIndex(df,
+                                                                                                                   'email',
+                                                                                                                   Lmail)])][
+                                                                                       1:-1].split(", "))))))))))[::-1])
+    return render_template("indexc.html",Lmail=Lmail,Pbk=passBook,Db=df,IND=ind,dataS=data)
 
 @app.route("/home")
 def home():
@@ -338,6 +396,12 @@ def chkTransaction():
             if emp['pin'][findIndex(emp,'empid',eI)]==eP:
                 if checkFBalance(a, df, f):
                     if AccountValidity(t,df):
+                        print(len(df['account_status'][findIndex(df, "account_number", f)]),
+                              (df['account_status'][findIndex(df, "account_number", f)]))
+                        print()
+                        print(print(len(df['account_status'][findIndex(df, "account_number", t)]),
+                                  (df['account_status'][findIndex(df, "account_number", t)])))
+                        print()
                         if len(df['account_status'][findIndex(df,"account_number",f)])==14 and len(df['account_status'][findIndex(df,"account_number",t)])==14:
                             fInd = findIndex(passBook, "account_number", f)
                             tInd = findIndex(passBook, "account_number", t)
@@ -380,6 +444,8 @@ def chkTransaction():
                             f1 = open("debug.txt", 'w')
                             f1.write(reason(df['account_status'][findIndex(df,"account_number",f)])+'\n'+reason(df['account_status'][findIndex(df,"account_number",f)]))
                             f1.close()
+                            print(len(df['account_status'][findIndex(df, "account_number", f)]),
+                                  (df['account_status'][findIndex(df, "account_number", f)]))
                             if len(df['account_status'][findIndex(df, "account_number", f)])>14 and len(df['account_status'][findIndex(df, "account_number", t)])>14:
 
                                 mainblk="Both Accounts"
@@ -390,15 +456,13 @@ def chkTransaction():
 
 
                             elif len(df['account_status'][findIndex(df, "account_number", t)])>14:
-
-                                blockedAccount1,mainblk=f,str(f)+" Account "
-                                rsn1=reason(df['account_status'][findIndex(df, "account_number", f)])
+                                blockedAccount1,mainblk=t,str(t)+" Account "
+                                rsn1=reason(df['account_status'][findIndex(df, "account_number", t)])
                                 blockedAccount2=""
                                 rsn2=""
+
+
                             elif len(df['account_status'][findIndex(df, "account_number", f)])>14:
-
-
-
                                 blockedAccount1,mainblk=f,str(f)+" Account "
                                 rsn1=reason(df['account_status'][findIndex(df, "account_number", f)])
                                 blockedAccount2=""
@@ -540,6 +604,10 @@ def accunblock1():
 
 @app.route("/accunblock", methods=["POST"])
 def accunblock():
+    mycon = sqltor.connect(host="localhost", user="root", passwd="admin", database="bank_management")
+
+    dfa = pd.read_sql("select * from accountDetails;", mycon)
+    mycon.close()
     # f = open("output.txt", "w")
     a = request.form["accnum"]
     b = request.form["empid"]
@@ -782,7 +850,7 @@ def passbook2(check):
 
     if int(d )== int(otp):
         check = "success"
-        data=zip((list(map(float,passBook['passbk'][findIndex(passBook,'account_number',df['account_number'][findIndex(df,'email',t)])][1:-1].split(", ")))),(list(map(lambda x: x.strftime("%d-%m-%Y"),(list(map(lambda x : (datetime.strptime(x, "%Y-%m-%d")),(list(map(lambda x: x[1:-1],passBook['date'][findIndex(passBook,'account_number',df['account_number'][findIndex(df,'email',t)])][1:-1].split(", ")))))))))))
+        data=zip((list(map(float,passBook['passbk'][findIndex(passBook,'account_number',df['account_number'][findIndex(df,'email',t)])][1:-1].split(", "))))[::-1],(list(map(lambda x: x.strftime("%d-%m-%Y"),(list(map(lambda x : (datetime.strptime(x, "%Y-%m-%d")),(list(map(lambda x: x[1:-1],passBook['date'][findIndex(passBook,'account_number',df['account_number'][findIndex(df,'email',t)])][1:-1].split(", "))))))))))[::-1])
         return render_template("passbook.html", check=check, Sdf=passBook,St=t,dataS=data)
     else:
         return render_template("passbook.html", check="failed")
@@ -1059,6 +1127,227 @@ def loanapp1():
                         smtp.sendmail(email_sender, email_receiver, em.as_string())
 
     return render_template("loanapplication.html")
+
+
+@app.route("/card_edit/<check>")
+def cardedit(check):
+    return render_template("card_edit.html", check=check)
+
+
+@app.route("/card_edit_func2", methods=["POST"])
+def cardeditfunc2():
+    tem = open("temp2.txt")
+    dis = tem.read().split()
+    tem.close()
+    print(dis[4])
+    print(request.form["acc_otp"])
+    if dis[4] == request.form["acc_otp"]:
+        return redirect(url_for("cardedit3", check3="acc_next"))
+    else:
+        return redirect(url_for("cardedit2", check2="wrong_otp"))
+
+
+
+@app.route("/card_edit_func", methods=["POST"])
+def cardeditfunc():
+    mycon = sqltor.connect(host="localhost", user="root", passwd="admin", database="bank_management")
+
+    df1 = pd.read_sql("select * from debit_card_details", mycon)
+    df2 = pd.read_sql("select * from accountdetails", mycon)
+
+    di1 = {x: y for x, y in zip(df1["account_number"], df1["debit_card_number"])}
+    di2 = {x: [y, z] for x, y, z in zip(df2["account_number"], df2["email"], df2["contact_number"])}
+    di3 = {x: y for x, y in zip(df1["debit_card_number"], df1["pin"])}
+    di4 = {x: y for x, y in zip(df1["account_number"], df1["status"])}
+
+    li_acc = list(df1["account_number"])
+    mycon.close()
+
+    if int(request.form["account"]) not in li_acc:
+        return redirect(url_for("cardedit", check="invalid_acc"))
+
+    if di1[int(request.form["account"])] == int(request.form["card_num"]):
+        if di2[int(request.form["account"])] == [request.form["acc_email"], request.form["acc_contact"]]:
+            if di3[int(request.form["card_num"])] == int(request.form["acc_pin"]):
+                tem = open("temp.txt", "w")
+                tem.write(request.form["account"])
+                tem.close()
+                from random import randint
+                otp = randint(100000, 999999)
+                from email.message import EmailMessage
+                import ssl
+                import smtplib
+
+                email_sender = "drdev.maill@gmail.com"
+                email_password = "mmieeonadmnrylqz"
+                email_receiver = ['adnaandawood101@gmail.com']
+                subject = "Debit Card Editing"
+                body = """
+Dear Customer,
+
+Your OTP for Debit Card Editing is {d}
+Please Do Not Share it with Others.
+
+Sincerely,
+
+    ShettyShrinivasDawoodKokrady Co-Operative Bank of India
+
+                """.format(d=otp)
+                em = EmailMessage()
+                em['From'] = email_sender
+                em['To'] = email_receiver
+                em['subject'] = subject
+                em.set_content(body)
+                context = ssl.create_default_context()
+                with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+                    smtp.login(email_sender, email_password)
+                    smtp.sendmail(email_sender, email_receiver, em.as_string())
+                tem = open("temp2.txt", "w")
+                tem.write(' '.join([request.form["card_num"], request.form["account"], request.form["acc_email"],
+                                    request.form["acc_contact"], str(otp), di4[int(request.form["account"])]]))
+                tem.close()
+                return redirect(url_for("cardedit2", check2="acc_next"))
+            else:
+                return redirect(url_for("cardedit", check="invalid_pin"))
+        else:
+            return redirect(url_for("cardedit", check="invalid_email"))
+    else:
+        return redirect(url_for("cardedit", check="acc_wrong"))
+
+
+@app.route("/card_edit2/<check2>")
+def cardedit2(check2):
+    tem = open("temp2.txt")
+    dis = tem.read().split()
+    tem.close()
+
+    return render_template("card_edit2.html", check2=check2, dis=dis)
+
+@app.route("/card_edit3/<check3>")
+def cardedit3(check3):
+    tem = open("temp2.txt")
+    dis = tem.read().split()
+    tem.close()
+
+    if (dis[5] == "Enabled" and check3 == "acc_next") or check3 == "debi_enable":
+        return render_template("card_edit31.html", check31=check3)
+    elif check3 == "debi_disable":
+        return render_template("card_edit32.html", check32=check3)
+    else:
+        return render_template("card_edit32.html", check32=check3)
+
+
+@app.route("/card_edit_func3", methods=["POST"])
+def cardeditfunc3():
+    mycon = sqltor.connect(host="localhost", user="root", passwd="admin", database="bank_management")
+    tem = open("temp.txt")
+    acc_no = int(tem.read())
+    tem.close()
+    cursor = mycon.cursor()
+
+    try:
+        if request.form["chek"] == 'T':
+            cursor.execute("update debit_card_details set status = 'Disabled' where account_number=%s;", [acc_no])
+            mycon.commit()
+
+    except:
+        try:
+            if request.form["chg_pin"] == request.form["chg_confpin"]:
+                cursor.execute("update debit_card_details set pin = %s where account_number=%s;",
+                               [request.form["chg_pin"], acc_no])
+                mycon.commit()
+
+            else:
+                return redirect(url_for("cardedit3", check31="notmatching"))
+        except:
+            pass
+        try:
+            if request.form["acc_type_online"] == "online":
+                cursor.execute("update debit_card_details set online_transaction = 'Yes' where account_number=%s;",
+                               [acc_no])
+                mycon.commit()
+        except:
+            cursor.execute("update debit_card_details set online_transaction = 'No' where account_number=%s;", [acc_no])
+            mycon.commit()
+
+        try:
+            if request.form["acc_type_international"] == "international":
+                cursor.execute(
+                    "update debit_card_details set international_transaction = 'Yes' where account_number=%s;",
+                    [acc_no])
+                mycon.commit()
+        except:
+            cursor.execute("update debit_card_details set international_transaction = 'No' where account_number=%s;",
+                           [acc_no])
+            mycon.commit()
+
+        try:
+            if int(request.form["chg_limit"]) > 0:
+                cursor.execute("update debit_card_details set limit_amount=%s where account_number=%s;",
+                               [request.form["chg_limit"], acc_no])
+                mycon.commit()
+        except:
+            pass
+        cursor.execute("update debit_card_details set status = 'Enabled' where account_number=%s;", [acc_no])
+        mycon.commit()
+
+    return redirect(url_for("cardedit", check="done"))
+
+
+
+
+@app.route('/new_account/<newacc_val>')
+def newacc(newacc_val):
+
+    return render_template('new-acc.html', newacc_val= newacc_val)
+
+
+@app.route('/new_account_func', methods=["POST"])
+def newacc_func():
+    mycon = sqltor.connect(host="localhost", user="root", passwd="admin", database="bank_management")
+
+    df1 = pd.read_sql("select * from accountdetails;", mycon)
+    df2 = pd.read_sql("select * from emp;", mycon)
+
+    li_acc = list(df1["account_number"])
+    li_no = list(df1["contact_number"])
+    li_email = list(df1["email"])
+
+    try:
+        accnumber = request.form["account"]
+        if int(request.form["account"]) in li_acc:
+            return redirect(url_for("newacc", newacc_val="newacc_accexist"))
+    except:
+        from random import randint
+        accnumber = randint(100000000, 999999999)
+        while accnumber in li_acc :
+            accnumber = randint(100000000, 999999999)
+
+
+    if request.form["contact_number"] in li_no:
+        return redirect(url_for("newacc", newacc_val="newacc_numexist"))
+
+    if request.form["email"] in li_email:
+        return redirect(url_for("newacc", newacc_val="newacc_emailexist"))
+
+
+
+    li1 = [list(df2.iloc[i]) for i in range(len(df2))]
+    emp_valid = [request.form["Emp_id"], request.form["Emp_pin"]] in li1
+    if not (request.form["security_code"] == request.form["security_code_check"]):
+        return redirect((url_for('newacc', newacc_val="newacc_passnotmatch")))
+
+    if emp_valid:
+        tu = (accnumber, request.form["contact_number"], request.form["email"], request.form["security_code"], request.form["address"], request.form["name"], 0, request.form["acc_type"], '{"Blocked": 0}', request.form["ifsc"])
+        cursor = mycon.cursor()
+        cursor.execute("insert into accountdetails (account_number, contact_number, email, security_code, address, account_holder, balance, account_type, account_status, ifsc_code) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);", tu)
+        cursor.execute("insert into passbook (account_number) values (%s)", [tu[0]])
+        mycon.commit()
+        cursor.close()
+        return redirect(url_for('newacc', newacc_val="newacc_success"))
+    else:
+        return redirect(url_for('newacc', newacc_val="newacc_empInvalid"))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
