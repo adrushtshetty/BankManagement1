@@ -1,5 +1,11 @@
+import os
+import smtplib
+from email.message import EmailMessage
+
 from flask import Flask, request, jsonify, render_template, url_for, redirect
 import pandas as pd
+from werkzeug.utils import secure_filename
+
 app = Flask(__name__)
 import random
 from processing import *
@@ -58,6 +64,7 @@ def loginClient():
     Lmail=mail
     key=request.form['password']
     if mail in df['email'].values:
+
         if df['security_code'][findIndex(df,'email',mail)]==key:
             ind=findIndex(df,'email',mail)
             with open('Lmail.txt', 'w') as file:
@@ -554,6 +561,10 @@ def accblock1():
 
 @app.route("/accblock", methods=["POST"])
 def accblock():
+    mycon = sqltor.connect(host="localhost", user="root", passwd="admin", database="bank_management")
+    dfa = pd.read_sql("select * from accountDetails;", mycon)
+    date = pd.read_sql(f"select * from stat_acc;", mycon)
+    mycon.close()
     # f = open("output.txt", "w")
     a = request.form["accnum"]
     b = request.form["empid"]
@@ -563,11 +574,12 @@ def accblock():
 
     value = False
     t1 = False
+    print(type(int(a)),a ,type((dfa['account_number'].values)[0]))
     if int(a) in dfa["account_number"].values:
         value = True
-        if len(dfa["account_status"][findIndex(dfa, "account_status", a)]) == 14:
+        if len(dfa["account_status"][findIndex(dfa, "account_number", int(a))]) == 14:
             if str(b) in emp["empid"].values and int(emp["pin"][findIndex(emp, "empid", b)]) == int(c):
-                if len(date["date"][findIndex(date, "account_number", a)]) == 11:
+                if len(date["date"][findIndex(date, "account_number", int(a))]) == 11:
                     t1 = True
                     dict1 = {"Reason": d, "Blocked": 1}
                     # to turn mm-dd-yyyy date which is e to dd-mm-yyyy
@@ -582,6 +594,7 @@ def accblock():
                     mycon.commit()
                     cursor.close()
                     mycon.close()
+                    return redirect(url_for("accsucblock"))
                     # {"Blocked": 0}
             else:
                 return render_template("employeenotfound.html")
@@ -591,7 +604,7 @@ def accblock():
         return render_template("accountnotfound.html")
     # f.write(str(value))
     # f.write(str(t1))
-    return redirect(url_for("accsucblock"))
+    # return redirect(url_for("accsucblock"))
 
 @app.route("/accsucblock")
 def accsucblock():
@@ -605,7 +618,7 @@ def accunblock1():
 @app.route("/accunblock", methods=["POST"])
 def accunblock():
     mycon = sqltor.connect(host="localhost", user="root", passwd="admin", database="bank_management")
-
+    dat = pd.read_sql(f"select * from stat_acc;", mycon)
     dfa = pd.read_sql("select * from accountDetails;", mycon)
     mycon.close()
     # f = open("output.txt", "w")
@@ -616,11 +629,13 @@ def accunblock():
 
     value = False
     t1 = False
-    if int(a) in dfa["account_number"].values:
+    print(type(int(a)),a,type((dfa['account_number'].values)[0]))
+    print(int(a) in list(map(int,list(dfa["account_number"].values))))
+    if int(a) in list(map(int,list(dfa["account_number"].values))):
         value = True
-        if str(dfa["account_status"][findIndex(dfa, "account_status", a)]) != r"{'Blocked': 0}":
+        if str(dfa["account_status"][findIndex(dfa, "account_number", int(a))]) != r"{'Blocked': 0}":
             if str(b) in emp["empid"].values and int(emp["pin"][findIndex(emp, "empid", b)]) == int(c):
-                if len(dat["date"][findIndex(dat, "account_number", a)]) != 11:
+                if len(dat["date"][findIndex(dat, "account_number", int(a))]) != 11:
                     t1 = True
                     dict1 = {"Blocked": 0}
                     f = open("output.txt", "w")
@@ -635,6 +650,7 @@ def accunblock():
                     mycon.commit()
                     cursor.close()
                     mycon.close()
+                    return render_template('unblocksuccess.html')
 
             else:
                 return render_template("employeenotfound1.html")
@@ -642,8 +658,9 @@ def accunblock():
             return render_template("accountalreadyunblocked.html")
     else:
         return render_template("accountnotfound1.html")
+    # return render_template('unblocksuccess.html')
 
-    return render_template('unblocksuccess.html')
+
 
 
 @app.route("/change")
@@ -668,7 +685,7 @@ def change1():
     cur.close()
     mycon.close()
     if (accno,) in lacc and (empid, pin) in lemp:
-        l = ["cno", "em", "add", "acchol", "acctyp", "accstat"]
+        l = ["cno", "em", "add", "acchol", "acctyp", "accblock1"]
         return redirect(url_for(l[int(request.form["sel"])]))
     else:
         return redirect(url_for("status", check="InvalidCredentials"))
@@ -715,6 +732,7 @@ def email():
     if len(content) == 1:
         accno = content
     accno = int(accno[0])
+    print(accno)
     email = request.form["email"]
     email1 = request.form["email1"]
     if email == email1:
@@ -724,6 +742,7 @@ def email():
         mycon.commit()
         cur.close()
         mycon.close()
+        print("done")
         return redirect(url_for("status", check='success1'))
     else:
         return redirect(url_for("StatusEm", check='change_error'))
@@ -793,6 +812,8 @@ def StatusHol(check):
 
 @app.route("/acctyp")
 def acctyp():
+    mycon = sqltor.connect(host="localhost", user="root", passwd="admin", database="bank_management")
+    cur = mycon.cursor()
     with open('temp.txt', 'r') as file:
         content = file.read().splitlines()
     if len(content) == 1:
@@ -802,8 +823,6 @@ def acctyp():
     lacc = cur.fetchall()
     print(lacc)
     if ("Current",) in lacc:
-        mycon = sqltor.connect(host="localhost", user="root", passwd="admin", database="bank_management")
-        cur = mycon.cursor()
         cur.execute("update accountdetails set account_type='Savings' where account_number=%s", [accno])
         mycon.commit()
         cur.close()
@@ -1099,7 +1118,7 @@ def loanapp1():
 
                     email_sender = "drdev.maill@gmail.com"
                     email_password = "mmieeonadmnrylqz"
-                    email_receiver = ["a101reasons@gmail.com"]
+                    email_receiver = ["adrushtshetty@gmail.com"]
                     body = """
                             New Personal Loan Application,
 
@@ -1348,6 +1367,154 @@ def newacc_func():
     else:
         return redirect(url_for('newacc', newacc_val="newacc_empInvalid"))
 
+
+
+@app.route('/fundtransferc/<ft_val>')
+def fundtc(ft_val):
+
+    return render_template('fundtransferc.html', ft_val = ft_val)
+
+
+@app.route('/fundtransfer_funcC', methods=["POST"] )
+def fundt_funC():
+    def findIndex(emp, column, empID):
+        ind1=0
+        for x in range(len(emp[column])):
+            if empID == emp[column][x]:
+                ind1 = x
+        return ind1
+
+    df1 = df
+    df2 = emp
+    df3 = passBook
+
+    li1 = {x: y for x, y in zip(df1["account_number"], df1["balance"])}
+    li2 = [list(df2.iloc[i]) for i in range(len(df2))]
+    li_req = [int(request.form["Acc_from"]), int(request.form["Acc_to"]),  request.form["Emp_pin"]]
+    print(li_req)
+    accFrom_valid = li_req[0] in li1.keys()
+    accTo_valid = li_req[1] in li1.keys()
+    emp_valid = df1['security_code'][findIndex(df1,'account_number',li_req[0])]==li_req[2]
+    senderBlk = len(df['account_status'][findIndex(df,'account_number',li_req[0])])==14
+    receiverBlk = len(df['account_status'][findIndex(df, 'account_number', li_req[1])])==14
+
+    if accFrom_valid and accTo_valid and emp_valid and senderBlk and receiverBlk:
+        Amount = float(request.form["Amt"])
+        if Amount > li1[li_req[0]]:
+            return redirect(url_for('fundt', ft_val="fundtransfer_insuffFund"))
+        else:
+            li1[li_req[0]] = li1[li_req[0]]-Amount
+            mycon = sqltor.connect(host="localhost", user="root", passwd="admin", database="bank_management")
+            cursor = mycon.cursor()
+            li1[li_req[1]] = li1[li_req[1]]+Amount
+            cursor.execute("update accountdetails set balance=%s where account_number=%s ;", [li1[li_req[0]], li_req[0]])
+            cursor.execute("update accountdetails set balance=%s where account_number=%s ;", [li1[li_req[1]], li_req[1]])
+            passbok = {x:y for x,y in zip(df3["account_number"],df3["passbk"])}
+            # correction for updating into table passbook from [10000.0, 10000.0, -3000.0, 0.9, 2000.0, -1000.0, -1000.0, -1000.0],-100.0 to [10000.0, 10000.0, -3000.0, 0.9, 2000.0, -1000.0, -1000.0, -1000.0, -100.0]
+            passbok[(li_req[0])] = str(list(map(float, passbok[(li_req[0])][1:-1].split(", "))) + [-Amount])
+            passbok[(li_req[1])] = str(list(map(float, passbok[(li_req[1])][1:-1].split(", "))) + [Amount])
+            cursor.execute("update passbook set passbk=%s where account_number=%s ;",[f"{passbok[li_req[0]]}", li_req[0]])
+            cursor.execute("update passbook set passbk=%s where account_number=%s ;",[f"{passbok[li_req[1]]}", li_req[1]])
+            mycon.commit()
+            mycon.close()
+            return redirect(url_for('fundtc', ft_val="fundt_success"))
+    elif not accFrom_valid:
+        return redirect(url_for('fundtc', ft_val="fundt_accfInvalid"))
+    elif not accTo_valid:
+        return redirect(url_for('fundtc', ft_val="fundt_acctInvalid"))
+    elif not emp_valid:
+        return redirect(url_for('fundtc', ft_val="fundt_empInvalid"))
+    elif not senderBlk:
+        return redirect(url_for('fundtc', ft_val="fundt_senderBlocked"))
+    elif not receiverBlk:
+        return redirect(url_for('fundtc', ft_val="fundt_receiverBlocked"))
+
+UPLOAD_FOLDER = 'static/docs'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+@app.route("/credit")
+def credit():
+    return render_template("credit.html")
+
+@app.route("/credit", methods=["POST"])
+def credit1():
+    mycon=sqltor.connect(host="localhost",user="root",passwd="admin",database="bank_management")
+    cur = mycon.cursor()
+    accno = int(request.form["accno"])
+    sec = request.form["sec"]
+    name = request.form["name"]
+    email = request.form["email"]
+    cno = request.form["cno"]
+    state = request.form["state"]
+    zip = request.form["zip"]
+    city = request.form["city"]
+    adr = request.form["adr"]
+
+    Aadhar = request.files['Aadhar']
+    filename = secure_filename(Aadhar.filename)
+    Aadhar.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+    pan = request.files['pan']
+    filename = secure_filename(pan.filename)
+    pan.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+    poa = request.files['poa']
+    filename = secure_filename(poa.filename)
+    poa.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+    poi = request.files['poi']
+    filename = secure_filename(poi.filename)
+    poi.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+    cur.execute("select account_holder,contact_number,email,security_code from accountdetails where account_number=%s",[accno])
+    l=cur.fetchall()
+    if (name, cno, email, sec) in l:
+        # cur.execute("insert into creditcard values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", (accno,sec,name,email,cno,state,zip,city,adr,Aadhar,pan,poa,poi))
+        # mycon.commit()
+        email_sender = "drdev.maill@gmail.com"
+        email_password = "mmieeonadmnrylqz"
+        email_receiver = ["srinivasadvaith05@gmail.com"]
+        body = f"""
+Dear Admin Team,
+
+Account number {accno} has requested for a credit card. Details are as given below
+accno = {accno}
+sec = {sec}
+name = {name}
+email = {email}
+cno = {cno}
+state = {state}
+zip = {zip}
+city = {city}
+adr = {adr}
+Aadhar = {Aadhar}
+pan = {pan}
+poa = {poa}
+poi = {poi}
+
+Sincerely,
+Your Bank
+                """
+        em = EmailMessage()
+        em['From'] = email_sender
+        em['To'] = email_receiver
+        em['subject'] = "Credit Card request"
+        em.set_content(body)
+        import ssl
+        context = ssl.create_default_context()
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+            smtp.login(email_sender, email_password)
+            smtp.sendmail(email_sender, email_receiver, em.as_string())
+        mycon.commit()
+        cur.close()
+        mycon.close()
+        return redirect(url_for("statuscre",check="success"))
+    else:
+        return redirect(url_for("statuscre", check="fail"))
+
+@app.route("/statuscre/<check>")
+def statuscre(check):
+    return render_template("credit.html",check=check)
 
 if __name__ == '__main__':
     app.run(debug=True)
