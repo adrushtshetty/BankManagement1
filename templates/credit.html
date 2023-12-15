@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Project W - Client Side Home page </title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon.png">
+    <link rel="stylesheet" href="/static/vendor/owl-carousel/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/static/vendor/owl-carousel/css/owl.theme.default.min.css">
+    <link href="/static/vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+</head>
+
+<body>
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div id="preloader">
+        <div class="sk-three-bounce">
+            <div class="sk-child sk-bounce1"></div>
+            <div class="sk-child sk-bounce2"></div>
+            <div class="sk-child sk-bounce3"></div>
+        </div>
+    </div>
+    <!--*******************
+        Preloader end
+    ********************-->
+
+
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper">
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+        <div class="nav-header">
+            <a href="index.html" class="brand-logo">
+                <img class="logo-abbr" src="static/images/logo.png" alt="">
+                <img class="logo-compact" src="static/images/a4.png"  alt="">
+                <img class="brand-title" src="static/images/a4.png" alt="">
+            </a>
+
+            <div class="nav-control">
+                <div class="hamburger">
+                    <span class="line"></span><span class="line"></span><span class="line"></span>
+                </div>
+            </div>
+        </div>
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+
+        <!--**********************************
+            Header start
+        ***********************************-->
+        <div class="header">
+            <div class="header-content">
+                <nav class="navbar navbar-expand">
+                    <div class="collapse navbar-collapse justify-content-between">
+                        </div>
+
+                        <ul class="navbar-nav header-right">
+                            <li class="nav-item dropdown header-profile">
+                                <a class="nav-link" href="#" role="button" data-toggle="dropdown">
+                                    <i class="mdi mdi-account"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a href="static/app-profile.html" class="dropdown-item">
+                                        <i class="icon-user"></i>
+                                        <span class="ml-2">{{Lmail}} </span>
+                                    </a>
+                                    <a href="/client" class="dropdown-item">
+                                        <i class="icon-key"></i>
+                                        <span class="ml-2">Logout </span>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!--**********************************
+            Header end ti-comment-alt
+        ***********************************-->
+
+        <!--**********************************
+            Sidebar start
+        ***********************************-->
+        <div class="quixnav">
+            <div class="quixnav-scroll">
+                <ul class="metismenu" id="menu">
+<!--                    <li class="nav-label first">Admin Features</li>-->
+<!--                    <li><a class="has-arrow" href="/chequeBookClearance" aria-expanded="false"><i class="fa-solid fa-money-check"></i><span class="nav-text">Cheque Book Clearance</span></a>-->
+<!--                        <li><a class="has-arrow" href="/fundtransfer/fundtransfer" aria-expanded="false"><i class="fa-solid fa-money-bill-transfer"></i><span class="nav-text">Fund Transfer</span></a>-->
+<!--                    <li><a class="has-arrow" href="/search" aria-expanded="false"><i class="fa-solid fa-database"></i><span class="nav-text">Search Queries</span></a>-->
+<!--                    <li><a class="has-arrow" href="/accblock" aria-expanded="false"><i class="fa-solid fa-lock"></i><span class="nav-text">Account Block</span></a>-->
+<!--                    <li><a class="has-arrow" href="/accunblock" aria-expanded="false"><i class="fa-solid fa-lock-open"></i><span class="nav-text">Account Un-Block</span></a>-->
+<!--                    <li><a class="has-arrow" href="/change" aria-expanded="false"><i class="fa-solid fa-gears"></i><span class="nav-text">Edit Account Details</span></a>-->
+<!--                        <ul aria-expanded="false">-->
+<!--                            <li><a href="./index.html">Dashboard 1</a></li>-->
+<!--                            <li><a href="./index2.html">Dashboard 2</a></li>-->
+<!--                        </ul>-->
+                    </li>
+                    <li class="nav-label">Client Features </li>
+                    <li><a class="has-arrow" href="/balanceenq/<check>" aria-expanded="false"><i class="fa-solid fa-money-bills"></i><span class="nav-text">Check Balance</span></a>
+                        <li><a class="has-arrow" href="/loanapp" aria-expanded="false"><i class="fa-solid fa-landmark"></i><span class="nav-text">Loan Application</span></a>
+                    <li><a class="has-arrow" href="/passbook/<check>" aria-expanded="false"><i class="fa-solid fa-money-check"></i><span class="nav-text">Passbook</span></a>
+                    <li><a class="has-arrow" href="/chequeBookOrdering/<check>" aria-expanded="false"><i class="fa-solid fa-lock"></i><span class="nav-text">Cheque Book Ordering</span></a>
+                    <li><a class="has-arrow" href="/card_edit/<check>" aria-expanded="false"><i class="fa-regular fa-credit-card"></i><span class="nav-text">Debit Card Settings</span></a>
+                    <li><a class="has-arrow" href="/fundtransfer/fundtransfer" aria-expanded="false"><i class="fa-solid fa-money-bill-transfer"></i><span class="nav-text">Fund Transfer</span></a>
+                    <li><a class="has-arrow" href="/credit" aria-expanded="false"><i class="fas fa-credit-card"></i><span class="nav-text">Credit Card Application</span></a>
+                </ul>
+            </div>
+
+
+        </div>
+        <!--**********************************
+            Sidebar end
+        ***********************************-->
+
+        <!--**********************************
+            Content body start
+        ***********************************-->
+<div class="content-body">
+            <div class="container-fluid">
+                <div class="row page-titles mx-0">
+                    <div class="col-sm-6 p-md-0">
+                        <div class="welcome-text">
+                            <h4>Credit Card Application</h4>
+                            <span class="ml-1">Form</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Form</a></li>
+                            <li class="breadcrumb-item active"><a href="javascript:void(0)">Application</a></li>
+                        </ol>
+                    </div>
+                </div>
+                <!-- row -->
+                <div class="row">
+                    <div class="col-xxl-6 col-xxl-12">
+                        <form action="{{url_for('credit1')}}", method="post" enctype="multipart/form-data">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Application</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="basic-form">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label>Account Number*</label>
+                                            <input type="text" name="accno" class="form-control" placeholder="Enter Account Number" required>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label>Security Code*</label>
+                                            <input type="text" name="sec" class="form-control" placeholder="Enter Security Code" required>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label>Full Name*</label>
+                                            <input type="text" name="name" class="form-control" placeholder="Enter Full Name" required>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label>Email*</label>
+                                            <input type="email" name="email" class="form-control" placeholder="Enter Email ID" required>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label>Contact Number*</label>
+                                            <input type="number" name="cno" class="form-control" placeholder="Enter Contact Number" reuired>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label>State*</label>
+                                            <select id="inputState" class="form-control" name="state" required>
+                                                <option value="" disable selected hidden>Choose State</option>
+                                                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                                <option value="Assam">Assam</option>
+                                                <option value="Bihar">Bihar</option>
+                                                <option value="Chandigarh">Chandigarh</option>
+                                                <option value="Chhattisgarh">Chhattisgarh</option>
+                                                <option value="Dadar and Nagar Haveli">Dadar and Nagar Haveli</option>
+                                                <option value="Daman and Diu">Daman and Diu</option>
+                                                <option value="Delhi">Delhi</option>
+                                                <option value="Lakshadweep">Lakshadweep</option>
+                                                <option value="Puducherry">Puducherry</option>
+                                                <option value="Goa">Goa</option>
+                                                <option value="Gujarat">Gujarat</option>
+                                                <option value="Haryana">Haryana</option>
+                                                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                                <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                                <option value="Jharkhand">Jharkhand</option>
+                                                <option value="Karnataka">Karnataka</option>
+                                                <option value="Kerala">Kerala</option>
+                                                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                                <option value="Maharashtra">Maharashtra</option>
+                                                <option value="Manipur">Manipur</option>
+                                                <option value="Meghalaya">Meghalaya</option>
+                                                <option value="Mizoram">Mizoram</option>
+                                                <option value="Nagaland">Nagaland</option>
+                                                <option value="Odisha">Odisha</option>
+                                                <option value="Punjab">Punjab</option>
+                                                <option value="Rajasthan">Rajasthan</option>
+                                                <option value="Sikkim">Sikkim</option>
+                                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                                <option value="Telangana">Telangana</option>
+                                                <option value="Tripura">Tripura</option>
+                                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                                <option value="Uttarakhand">Uttarakhand</option>
+                                                <option value="West Bengal">West Bengal</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <label>Zip*</label>
+                                            <input type="text" name="zip" class="form-control" placeholder="Example: 560085" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label>Address*</label>
+                                            <textarea class="form-control" name="adr" rows="4" id="comment" placeholder="Enter Address" required></textarea>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label>City*</label>
+                                            <input type="text" name="city" class="form-control" placeholder="Example: Bangalore" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="basic-form">
+                                    <div class="input-group mb-3">
+                                        <label class="col-sm-2 col-form-label">Aadhar card*</label>
+                                        <div class="col-sm-10">
+                                            <input type="file" class="custom-file-input" name="Aadhar" required>
+                                            <label class="custom-file-label">Choose file</label>
+                                        </div>
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <label class="col-sm-2 col-form-label">PAN card*</label>
+                                        <div class="col-sm-10">
+                                            <input type="file" class="custom-file-input" name="pan" required>
+                                            <label class="custom-file-label">Choose file</label>
+                                        </div>
+                                    </div>
+                                        <div class="input-group mb-3">
+                                        <label class="col-sm-2 col-form-label">Proof of Address*</label>
+                                        <div class="col-sm-10">
+                                            <input type="file" class="custom-file-input" name="poa" required>
+                                            <label class="custom-file-label">Choose file</label>
+                                        </div>
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <label class="col-sm-2 col-form-label">Proof of Income*</label>
+                                        <div class="col-sm-10">
+                                            <input type="file" class="custom-file-input" name="poi" required>
+                                            <label class="custom-file-label">Choose file</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-10">
+                                            <br>
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                    <div class="col-xxl-6 col-xxl-12">
+                        {% if check=='success'%}
+                                <div class="alert alert-success"><strong>Success!</strong> Applied for Credit Card.</div>
+                        {% elif check=='fail'%}
+                                <div class="alert alert-danger"><strong>Error!</strong> Invalid Credentials.</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+
+
+        <!--**********************************
+            Footer start
+        ***********************************-->
+<div class="footer">
+            <div class="copyright">
+                <p>Copyright © Designed &amp; Developed by <a href="#" target="_blank">Project W</a> 2023</p>
+                <p>Distributed by <a href="https://www.youtube.com/watch?v=0MxulhivCvI" target="_blank">Cs department</a></p>
+            </div>
+        </div>
+        <!--**********************************
+            Footer end
+        ***********************************-->
+
+        <!--**********************************
+           Support ticket button start
+        ***********************************-->
+
+        <!--**********************************
+           Support ticket button end
+        ***********************************-->
+
+
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Required vendors -->
+    <script src="/static/vendor/global/global.min.js"></script>
+    <script src="/static/js/quixnav-init.js"></script>
+    <script src="/static/js/custom.min.js"></script>
+
+
+    <!-- Vectormap -->
+    <script src="/static/vendor/raphael/raphael.min.js"></script>
+    <script src="/static/vendor/morris/morris.min.js"></script>
+
+
+    <script src="/static/vendor/circle-progress/circle-progress.min.js"></script>
+    <script src="/static/vendor/chart.js/Chart.bundle.min.js"></script>
+
+    <script src="/static/vendor/gaugeJS/dist/gauge.min.js"></script>
+
+    <!--  flot-chart js -->
+    <script src="/static/vendor/flot/jquery.flot.js"></script>
+    <script src="/static/vendor/flot/jquery.flot.resize.js"></script>
+
+    <!-- Owl Carousel -->
+    <script src="/static/vendor/owl-carousel/js/owl.carousel.min.js"></script>
+
+    <!-- Counter Up -->
+    <script src="/static/vendor/jqvmap/js/jquery.vmap.min.js"></script>
+    <script src="/static/vendor/jqvmap/js/jquery.vmap.usa.js"></script>
+    <script src="/static/vendor/jquery.counterup/jquery.counterup.min.js"></script>
+
+
+    <script src="/static/js/dashboard/dashboard-1.js"></script>
+
+</body>
+
+</html>
